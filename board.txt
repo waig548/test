@@ -1,0 +1,12 @@
+3 4
+#P# #P# #P# #P#
+PP# PPP PPP PPP
+### #P# ### #P#
+
+#P# #P# #P# #P#
+PPP PPP PP# PPP
+#P# #P# #P# #P#
+
+### ### #P# ###
+PPP PPP PP# PPP
+### ### ### ###
