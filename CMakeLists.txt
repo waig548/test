@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 project(plumber)
 
 # 设置 IrrKlang 版本和下载链接
@@ -12,22 +12,21 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(irrKlang)
 
 # 假定 IrrKlang 解压到了预设的 irrKlang_SOURCE_DIR
-set(IRRKLANG_ROOT ${irrKlang_SOURCE_DIR}/irrKlang-${IRRKLANG_VERSION})
-
-# 指定 IrrKlang 的头文件目录和库目录
-include_directories(PUBLIC ${IRRKLANG_ROOT}/include)
-link_directories(${IRRKLANG_ROOT}/lib/Winx64-visualStudio)
+set(IRRKLANG_ROOT "build/_deps/irrklang-src")
 
 # 创建可执行文件
-add_executable(plumber Source.cpp)
+add_executable(plumber Algorithm.h Direction.h Game.h Maze.h Pipe.h Source.cpp)
 
-# 链接 IrrKlang 库
+target_include_directories(plumber PUBLIC ".")
 target_include_directories(plumber PUBLIC ${IRRKLANG_ROOT}/include)
+# 链接 IrrKlang 库
 target_link_directories(plumber PRIVATE ${IRRKLANG_ROOT}/lib/Winx64-visualStudio)
-target_link_libraries(plumber irrKlang.lib)
+target_link_libraries(plumber PRIVATE irrKlang)
 
 # 复制音效文件夹到构建目录，以便运行时可以找到音效资源
 file(COPY ${CMAKE_SOURCE_DIR}/soundEffect DESTINATION ${CMAKE_BINARY_DIR}/soundEffect)
+
+add_custom_command(TARGET plumber POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/${IRRKLANG_ROOT}/bin/winx64-visualStudio/irrKlang.dll ${CMAKE_BINARY_DIR}/Debug/irrKlang.dll)
 
 # 对于每种构建配置（Debug, Release等），确保运行时资源也被复制过去
 foreach(CONFIGURATION_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
